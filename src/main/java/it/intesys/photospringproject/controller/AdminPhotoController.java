@@ -53,4 +53,16 @@ public class AdminPhotoController {
             throw new RuntimeException("Photo not found with id: " + id);
         }
     }
+    @DeleteMapping("admin/api/photos/{id}")
+    public void deletePhoto(@PathVariable int id) {
+        Optional<Photo> photo = list.stream()
+                .filter(p -> p.getId() == id)
+                .findFirst();
+
+        if (photo.isPresent()) {
+            list.remove(photo.get());
+        } else {
+            throw new RuntimeException("Photo not found with id: " + id);
+        }
     }
+}
