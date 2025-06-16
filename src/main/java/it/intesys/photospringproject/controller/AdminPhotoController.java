@@ -1,67 +1,42 @@
 package it.intesys.photospringproject.controller;
-
 import it.intesys.photospringproject.model.Photo;
+import it.intesys.photospringproject.service.PhotoService;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
 public class AdminPhotoController {
 
-    private List<Photo> list;
+    private final PhotoService photoService;
 
 
     public AdminPhotoController() {
-        list = new ArrayList<Photo>();
-        list.add(new Photo(1,"./img/01.png"));
-        list.add(new Photo(2,"./img/02.png"));
-        list.add(new Photo(3,"./img/03.png"));
-
+       photoService = new PhotoService();
     }
     @RequestMapping("admin/api/photos")
     public Iterable<Photo> getAll() {
 
-        return list;
+        return photoService.getAll();
     }
     @RequestMapping("admin/api/photos/{id}")
     public Photo getById(@PathVariable int id) {
 
-        Optional<Photo> photo = list.stream().filter(p -> p.getId() == id).findFirst();
-        return photo.orElseThrow(() -> new RuntimeException("Photo not found with id: " + id));
+        Optional<Photo> photo = Optional.ofNullable(photoService.getById(id));
+        return photoService.getById(id);
     }
     @PostMapping("admin/api/photos")
     public Photo addPhoto(@RequestBody Photo photo) {
-        if (photo.getId() == 0) {
-            photo.setId(list.size() + 1);
-        }
-        list.add(photo);
-        return photo;
+        return photoService.addPhoto(photo);
     }
     @PutMapping("admin/api/photos/{id}")
     public Photo updatePhoto(@PathVariable int id, @RequestBody Photo newPhoto) {
-        Optional<Photo> existingPhoto = list.stream()
-                .filter(p -> p.getId() == id)
-                .findFirst();
-
-        if (existingPhoto.isPresent()) {
-            list.remove(existingPhoto.get());
-            list.add(newPhoto);
-            return newPhoto;
-        } else {
-            throw new RuntimeException("Photo not found with id: " + id);
-        }
+        Optional<Photo> updatedPhoto = Optional.ofNullable(photoService.updatePhoto(id, newPhoto));
+        return updatedPhoto.get();
     }
     @DeleteMapping("admin/api/photos/{id}")
     public void deletePhoto(@PathVariable int id) {
-        Optional<Photo> photo = list.stream()
-                .filter(p -> p.getId() == id)
-                .findFirst();
-
-        if (photo.isPresent()) {
-            list.remove(photo.get());
-        } else {
+        Optional<Photo> photo = photoService.deletePhoto(id);
+        if (photo.isEmpty()) {
             throw new RuntimeException("Photo not found with id: " + id);
         }
     }
