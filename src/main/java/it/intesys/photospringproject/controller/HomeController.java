@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class HomeController {
     @RequestMapping("/")
-    @ResponseBody
+
     public String home() {
-        return "Welcome to the Photo Spring Project!";
+        return "index";
     }
 
     @RequestMapping("/demo")
