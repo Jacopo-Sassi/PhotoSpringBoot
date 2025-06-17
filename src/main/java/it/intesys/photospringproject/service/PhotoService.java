@@ -1,11 +1,13 @@
 package it.intesys.photospringproject.service;
 
 import it.intesys.photospringproject.model.Photo;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class PhotoService {
     private static List<Photo> list;
 
